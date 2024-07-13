@@ -1,0 +1,56 @@
+<template>
+        <lightning-modal-header label="Appointment Form" class="myModalHeader">
+        </lightning-modal-header>
+        <lightning-card>
+            <lightning-layout multiple-rows>
+                <lightning-layout-item size="6" class="slds-p-around_medium">
+                    <lightning-input label="Contact" type="search"
+                                    is-loading={isSearchLoading} value={searchTerm} 
+                                    placeholder="Search Contact..."  
+                                    onchange={handleContactChange} 
+                                    required
+                                    onfocus={handleFocus}
+                                    ></lightning-input>
+
+                    <template if:true={contactsFound}>
+                        <div class="slds-p-horizontal_small" style="border:1px solid skyblue; height:fit-content; width:fit-content;">
+                            <ul class="slds-list_vertical-space customClass">
+                                <template for:each={contactList} for:item="cont">
+                                    <li key={cont.Id} role="presentation" class="slds-text-link" style="cursor: pointer;padding-top: 5px;">
+                                          <div data-id={cont.Id} onclick={handleSelectedRecord} role="option">
+                                                <span>{cont.Name}</span>
+                                          </div>       
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </template>                    
+                    
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_medium">
+                    <lightning-input label="Subject" type="text" required onchange={handleSubjectChange} id="subject"></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_medium">
+                    <lightning-input label="Appointment Date and Time" required type="datetime" timezone="UTC" onchange={handleDateTimeChange} id="dateTime"></lightning-input>
+                    <lightning-button label="Check Availability" variant="brand" onclick={checkAvailability}></lightning-button>
+                    <template if:false={slotPresent}>
+                            <p style="padding-left: 5px;">No Slots Available.</p>
+                    </template>
+                    <template if:true={slotPresent}>
+                        <p style="padding-left: 5px; color:green">Slot is Available.</p>
+                    </template>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" class="slds-p-around_medium">
+                    <lightning-textarea label="Description" required onchange={handleDescriptionChange} id="description"></lightning-textarea>
+                </lightning-layout-item>
+            </lightning-layout>
+            <p slot="footer">
+                <template if:false={slotPresent}>
+                    <lightning-button label="Book Appointment" variant="brand" disabled="" onclick={bookAppointment}></lightning-button>
+                </template>
+                <template if:true={slotPresent}>
+                    <lightning-button label="Book Appointment" variant="brand" onclick={bookAppointment}></lightning-button>
+                </template>
+            </p>
+        </lightning-card>
+</template>
